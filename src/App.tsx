@@ -124,7 +124,6 @@ function App() {
   const [diffMode, setDiffMode] = useState<DiffMode>('line')
   const [formatMode, setFormatMode] = useState<FormatMode>('highlight')
   const [status, setStatus] = useState<string>('')
-  const [showLineNumbers, setShowLineNumbers] = useState<boolean>(true)
 
   const deferredLeft = useDeferredValue(leftText)
   const deferredRight = useDeferredValue(rightText)
@@ -287,14 +286,7 @@ function App() {
                 />
               </label>
             </div>
-            <div className={`textarea-wrapper ${showLineNumbers ? 'with-line-numbers' : ''}`}>
-              {showLineNumbers && (
-                <div className="line-numbers">
-                  {leftText.split('\n').map((_, index) => (
-                    <div key={index} className="line-number">{index + 1}</div>
-                  ))}
-                </div>
-              )}
+            <div className="textarea-wrapper">
               <textarea
                 aria-label="Original text"
                 value={leftText}
@@ -316,14 +308,7 @@ function App() {
                 />
               </label>
             </div>
-            <div className={`textarea-wrapper ${showLineNumbers ? 'with-line-numbers' : ''}`}>
-              {showLineNumbers && (
-                <div className="line-numbers">
-                  {rightText.split('\n').map((_, index) => (
-                    <div key={index} className="line-number">{index + 1}</div>
-                  ))}
-                </div>
-              )}
+            <div className="textarea-wrapper">
               <textarea
                 aria-label="Updated text"
                 value={rightText}
@@ -367,16 +352,6 @@ function App() {
               </button>
             </div>
           </div>
-          <div className="control-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={showLineNumbers}
-                onChange={(e) => setShowLineNumbers(e.target.checked)}
-              />
-              {' '}Line numbers
-            </label>
-          </div>
           <div className="actions">
             <button type="button" onClick={handleCopy} disabled={!plainText}>
               Copy diff
@@ -413,16 +388,7 @@ function App() {
                 <div className="diff-split" aria-label="Split diff panes">
                   <div className="diff-pane" aria-label="Original text pane">
                     <div className="diff-pane__label">Original text</div>
-                    <div className={showLineNumbers ? 'with-line-numbers diff-pane__body' : 'diff-pane__body'}>
-                      {showLineNumbers && (
-                        <div className="line-numbers" aria-hidden="true">
-                          {alignedRows.map((row, index) => (
-                            <div key={index} className="line-number">
-                              {row.leftLineNumber ?? ''}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    <div className="diff-pane__body">
                       <div className="diff-content diff-lines" aria-label="Original highlighted lines">
                         {alignedRows.map((row, index) => (
                           <div key={index} className="diff-line">
@@ -435,16 +401,7 @@ function App() {
 
                   <div className="diff-pane" aria-label="Updated text pane">
                     <div className="diff-pane__label">Updated text</div>
-                    <div className={showLineNumbers ? 'with-line-numbers diff-pane__body' : 'diff-pane__body'}>
-                      {showLineNumbers && (
-                        <div className="line-numbers" aria-hidden="true">
-                          {alignedRows.map((row, index) => (
-                            <div key={index} className="line-number">
-                              {row.rightLineNumber ?? ''}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    <div className="diff-pane__body">
                       <div className="diff-content diff-lines" aria-label="Updated highlighted lines">
                         {alignedRows.map((row, index) => (
                           <div key={index} className="diff-line">
@@ -463,16 +420,7 @@ function App() {
                 <div className="diff-split" aria-label="Split plain diff panes">
                   <div className="diff-pane" aria-label="Original text pane">
                     <div className="diff-pane__label">Original text</div>
-                    <div className={showLineNumbers ? 'with-line-numbers diff-pane__body' : 'diff-pane__body'}>
-                      {showLineNumbers && (
-                        <div className="line-numbers" aria-hidden="true">
-                          {alignedRows.map((row, index) => (
-                            <div key={index} className="line-number">
-                              {row.leftLineNumber ?? ''}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    <div className="diff-pane__body">
                       <pre className="diff-content diff-lines" aria-label="Original plain lines">
                         {alignedRows
                           .map((row) => renderPlainLine(row, 'left'))
@@ -483,16 +431,7 @@ function App() {
 
                   <div className="diff-pane" aria-label="Updated text pane">
                     <div className="diff-pane__label">Updated text</div>
-                    <div className={showLineNumbers ? 'with-line-numbers diff-pane__body' : 'diff-pane__body'}>
-                      {showLineNumbers && (
-                        <div className="line-numbers" aria-hidden="true">
-                          {alignedRows.map((row, index) => (
-                            <div key={index} className="line-number">
-                              {row.rightLineNumber ?? ''}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    <div className="diff-pane__body">
                       <pre className="diff-content diff-lines" aria-label="Updated plain lines">
                         {alignedRows
                           .map((row) => renderPlainLine(row, 'right'))
