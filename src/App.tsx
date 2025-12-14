@@ -70,7 +70,7 @@ function App() {
     link.href = url
     link.download = 'text-diff.txt'
     link.click()
-    URL.revokeObjectURL(url)
+    setTimeout(() => URL.revokeObjectURL(url), 0)
     setStatus('Downloaded diff as text')
   }
 
