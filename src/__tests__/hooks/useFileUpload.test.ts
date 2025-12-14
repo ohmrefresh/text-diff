@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useFileUpload } from '../../hooks/useFileUpload'
 
 describe('useFileUpload', () => {
@@ -41,10 +41,10 @@ describe('useFileUpload', () => {
 
     await result.current(event)
 
-    // Wait for promise to reject
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(onError).toHaveBeenCalledWith('Failed to read file')
+    // Wait for onError to be called
+    await waitFor(() => {
+      expect(onError).toHaveBeenCalledWith('Failed to read file: Read error')
+    })
     expect(onSuccess).not.toHaveBeenCalled()
   })
 })
