@@ -16,10 +16,10 @@ function getDiffRowClass(kind: DiffRow['kind'], side: 'left' | 'right'): string 
     return side === 'left' ? 'removed' : 'unchanged'
   } else if (kind === 'added') {
     return side === 'right' ? 'added' : 'unchanged'
-  } else {
-    // kind === 'modified'
+  } else if (kind === 'modified') {
     return side === 'left' ? 'removed' : 'added'
   }
+  return 'unchanged'
 }
 
 function renderHighlightedLine(row: DiffRow, side: 'left' | 'right', diffMode: DiffMode) {

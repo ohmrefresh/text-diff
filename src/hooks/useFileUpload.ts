@@ -12,8 +12,8 @@ export function useFileUpload(
       const text = await file.text()
       onSuccess(text, file.name)
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      onError(`Failed to read file: ${errorMessage}`);
+      const message = error instanceof Error ? error.message : String(error);
+      onError(`Failed to read file: ${message}`);
     }
   }
 
