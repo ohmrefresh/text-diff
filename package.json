@@ -2,7 +2,7 @@
   "name": "text-diff",
   "private": true,
   "version": "0.0.1",
-  "type": "module",
+  "homepage": "https://ohmrefresh.github.io/text-diff",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
