@@ -58,7 +58,7 @@ function App() {
       await navigator.clipboard.writeText(plainText)
       setStatus('Copied diff to clipboard')
     } catch {
-      setStatus('Copy not available in this browser')
+      setStatus('Failed to copy to clipboard')
     }
   }
 
@@ -70,7 +70,7 @@ function App() {
     link.href = url
     link.download = 'text-diff.txt'
     link.click()
-    setTimeout(() => URL.revokeObjectURL(url), 0)
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
     setStatus('Downloaded diff as text')
   }
 
