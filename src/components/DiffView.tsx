@@ -9,6 +9,19 @@ type DiffViewProps = {
   status: string
 }
 
+function getDiffRowClass(kind: DiffRow['kind'], side: 'left' | 'right'): string {
+  if (kind === 'unchanged') {
+    return 'unchanged'
+  } else if (kind === 'removed') {
+    return side === 'left' ? 'removed' : 'unchanged'
+  } else if (kind === 'added') {
+    return side === 'right' ? 'added' : 'unchanged'
+  } else if (kind === 'modified') {
+    return side === 'left' ? 'removed' : 'added'
+  }
+  return 'unchanged'
+}
+
 function renderHighlightedLine(row: DiffRow, side: 'left' | 'right', diffMode: DiffMode) {
   const text = side === 'left' ? row.leftText : row.rightText
   if (text == null) return <span className="chunk unchanged"></span>
@@ -34,20 +47,7 @@ function renderHighlightedLine(row: DiffRow, side: 'left' | 'right', diffMode: D
       .filter(Boolean)
   }
 
-  const cls =
-    row.kind === 'unchanged'
-      ? 'unchanged'
-      : row.kind === 'removed'
-        ? side === 'left'
-          ? 'removed'
-          : 'unchanged'
-        : row.kind === 'added'
-          ? side === 'right'
-            ? 'added'
-            : 'unchanged'
-          : side === 'left'
-            ? 'removed'
-            : 'added'
+  const cls = getDiffRowClass(row.kind, side)
 
   return <span className={`chunk ${cls}`}>{text}</span>
 }

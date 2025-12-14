@@ -21,8 +21,8 @@ export function TextInput({
     <div className="input-card">
       <div className="input-card__header">
         <span>{label}</span>
-        <label className="file-upload-btn" title="Open file">
-          📁
+        <label className="file-upload-btn" title="Open file" aria-label="Upload file">
+          Upload
           <input
             type="file"
             accept=".txt,.md,.js,.ts,.jsx,.tsx,.html,.css,.json,.xml,.csv,.log,text/*"
