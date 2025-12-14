@@ -343,6 +343,48 @@ button.ghost {
   margin: 0;
 }
 
+.diff-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.diff-pane {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.diff-pane__label {
+  padding: 10px 12px;
+  font-weight: 800;
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.diff-pane__body {
+  background: #f8fafc;
+}
+
+.diff-pane__body .line-numbers {
+  border-radius: 0;
+}
+
+.diff-pane__body .diff-content {
+  padding: 12px;
+}
+
+.diff-lines {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.diff-line {
+  min-height: 1.6em;
+}
+
 .with-line-numbers {
   display: flex;
   gap: 0;
@@ -423,5 +465,9 @@ button.ghost {
 
   .actions button {
     flex: 1 1 auto;
+  }
+
+  .diff-split {
+    grid-template-columns: 1fr;
   }
 }
