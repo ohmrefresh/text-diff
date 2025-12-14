@@ -6,11 +6,9 @@ import './App.css'
 type DiffMode = 'line' | 'word'
 type FormatMode = 'highlight' | 'plain'
 
-const INITIAL_LEFT = `Client-side diffing keeps your text in the browser.
-Paste any content here—even large documents.`
+const INITIAL_LEFT = ``
 
-const INITIAL_RIGHT = `Client-side diffing keeps your text in the browser.
-Paste any content here, compare drafts, and export the result.`
+const INITIAL_RIGHT = ``
 
 function formatPlainDiff(changes: Change[]): string[] {
   const lines: string[] = []
@@ -36,6 +34,7 @@ function App() {
   const [diffMode, setDiffMode] = useState<DiffMode>('line')
   const [formatMode, setFormatMode] = useState<FormatMode>('highlight')
   const [status, setStatus] = useState<string>('')
+  const [showLineNumbers, setShowLineNumbers] = useState<boolean>(true)
 
   const deferredLeft = useDeferredValue(leftText)
   const deferredRight = useDeferredValue(rightText)
@@ -72,6 +71,23 @@ function App() {
     link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000)
     setStatus('Downloaded diff as text')
+  }
+
+  const handleFileUpload = (side: 'left' | 'right') => async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    
+    try {
+      const text = await file.text()
+      if (side === 'left') {
+        setLeftText(text)
+      } else {
+        setRightText(text)
+      }
+      setStatus(`Loaded ${file.name}`)
+    } catch {
+      setStatus('Failed to read file')
+    }
   }
 
   return (
@@ -112,24 +128,60 @@ function App() {
           <div className="input-card">
             <div className="input-card__header">
               <span>Original text</span>
+              <label className="file-upload-btn" title="Open file">
+                📁
+                <input
+                  type="file"
+                  accept=".txt,.md,.js,.ts,.jsx,.tsx,.html,.css,.json,.xml,.csv,.log,text/*"
+                  onChange={handleFileUpload('left')}
+                  style={{ display: 'none' }}
+                />
+              </label>
             </div>
-            <textarea
-              aria-label="Original text"
-              value={leftText}
-              onChange={(event) => setLeftText(event.target.value)}
-              placeholder="Paste or type the original text here"
-            />
+            <div className={`textarea-wrapper ${showLineNumbers ? 'with-line-numbers' : ''}`}>
+              {showLineNumbers && (
+                <div className="line-numbers">
+                  {leftText.split('\n').map((_, index) => (
+                    <div key={index} className="line-number">{index + 1}</div>
+                  ))}
+                </div>
+              )}
+              <textarea
+                aria-label="Original text"
+                value={leftText}
+                onChange={(event) => setLeftText(event.target.value)}
+                placeholder="Paste or type the original text here"
+              />
+            </div>
           </div>
           <div className="input-card">
             <div className="input-card__header">
               <span>Updated text</span>
+              <label className="file-upload-btn" title="Open file">
+                📁
+                <input
+                  type="file"
+                  accept=".txt,.md,.js,.ts,.jsx,.tsx,.html,.css,.json,.xml,.csv,.log,text/*"
+                  onChange={handleFileUpload('right')}
+                  style={{ display: 'none' }}
+                />
+              </label>
             </div>
-            <textarea
-              aria-label="Updated text"
-              value={rightText}
-              onChange={(event) => setRightText(event.target.value)}
-              placeholder="Paste or type the updated text here"
-            />
+            <div className={`textarea-wrapper ${showLineNumbers ? 'with-line-numbers' : ''}`}>
+              {showLineNumbers && (
+                <div className="line-numbers">
+                  {rightText.split('\n').map((_, index) => (
+                    <div key={index} className="line-number">{index + 1}</div>
+                  ))}
+                </div>
+              )}
+              <textarea
+                aria-label="Updated text"
+                value={rightText}
+                onChange={(event) => setRightText(event.target.value)}
+                placeholder="Paste or type the updated text here"
+              />
+            </div>
           </div>
         </section>
 
@@ -166,6 +218,16 @@ function App() {
               </button>
             </div>
           </div>
+          <div className="control-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={showLineNumbers}
+                onChange={(e) => setShowLineNumbers(e.target.checked)}
+              />
+              {' '}Line numbers
+            </label>
+          </div>
           <div className="actions">
             <button type="button" onClick={handleCopy} disabled={!plainText}>
               Copy diff
@@ -199,22 +261,46 @@ function App() {
               {diffResult.length === 0 ? (
                 <p className="placeholder">Start typing above to see the differences.</p>
               ) : (
-                diffResult.map((part, index) => (
-                  <span
-                    key={`${index}-${part.count ?? 0}`}
-                    className={`chunk ${
-                      part.added ? 'added' : part.removed ? 'removed' : 'unchanged'
-                    }`}
-                  >
-                    {part.value}
-                  </span>
-                ))
+                <div className={showLineNumbers ? 'with-line-numbers' : ''}>
+                  {showLineNumbers && (
+                    <div className="line-numbers">
+                      {plainLines.map((_, index) => (
+                        <div key={index} className="line-number">{index + 1}</div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="diff-content">
+                    {diffResult.map((part, index) => (
+                      <span
+                        key={`${index}-${part.count ?? 0}`}
+                        className={`chunk ${
+                          part.added ? 'added' : part.removed ? 'removed' : 'unchanged'
+                        }`}
+                      >
+                        {part.value}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           ) : (
-            <pre className="diff-output plain" aria-label="Plain text diff">
-              {plainText || 'Start typing above to see the differences.'}
-            </pre>
+            <div className="diff-output plain" aria-label="Plain text diff">
+              {plainText ? (
+                <div className={showLineNumbers ? 'with-line-numbers' : ''}>
+                  {showLineNumbers && (
+                    <div className="line-numbers">
+                      {plainLines.map((_, index) => (
+                        <div key={index} className="line-number">{index + 1}</div>
+                      ))}
+                    </div>
+                  )}
+                  <pre className="diff-content">{plainText}</pre>
+                </div>
+              ) : (
+                'Start typing above to see the differences.'
+              )}
+            </div>
           )}
         </section>
       </div>
